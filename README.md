@@ -1,7 +1,10 @@
 # ANN correlation models
 Correlation models for several IMs developed via ANN
 
-**ANN models are available under /models folder.**
+**ANN models are available under /models directory.**
+
+# Reference
+Aristeidou, S., Shahnazaryan, D. and O’Reilly, G.J. (2024) ‘Correlation Models for Next-Generation Amplitude and Cumulative 2 Intensity Measures using Artificial Neural Networks’, Under Review
 
 # Quick start without tensorflow models
 
@@ -30,14 +33,14 @@ period2 = 0.5
 corr = aso2024_correlation_int("SA-FIV3", period1, period2)
 
 print(f"Correlation coefficient between SA({period1}s) "
-      f"and FIV3({period2}) is {corr:.2f}!")
+      f"and FIV3({period2}) is {corr:.3f}!")
 
 # Example 2 - Sa_avg2-Ds575
 period1 = 0.6
 corr = aso2024_correlation_int("Sa_avg2-Ds575", period1)
 
 print(f"Correlation coefficient between Sa_avg2({period1}s) "
-      f"and Ds575 is {corr:.2f}!")
+      f"and Ds575 is {corr:.3f}!")
 
 ```
 
