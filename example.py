@@ -1,19 +1,3 @@
-# ANN correlation models
-Correlation models for several IMs developed via ANN
-
-**ANN models are available under /models folder.**
-
-# Quick start without tensorflow models
-
-### 1. Install requirements
-
-```shell
-pip3 install -r requirements.txt
-```
-
-### 2. Run a sample code using interpolations (example.py)
-
-```python
 from correlation_models import aso2024_correlation, supported_ims, \
     supported_im_pairs
 
@@ -38,5 +22,3 @@ corr = aso2024_correlation("Sa_avg2-Ds575", period1)
 
 print(f"Correlation coefficient between Sa_avg2({period1}s) "
       f"and Ds575 is {corr:.2f}!")
-
-```
