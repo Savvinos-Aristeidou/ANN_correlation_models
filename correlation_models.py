@@ -4,6 +4,7 @@ import warnings
 import numpy as np
 from scipy.interpolate import interp1d, RegularGridInterpolator
 import json
+import activation_functions
 
 
 def read_json(filename: Union[Path, dict]):
@@ -55,7 +56,22 @@ SUPPORTED_CORRELATION_PAIRS = frozenset({
     "Sa_avg2-Ds575", "Sa_avg2-Ds595", "FIV3-PGA", "FIV3-PGV", "Sa_avg2-FIV3"
 })
 
+TRANSFORMATIONS = frozenset({
+    "SA-Ds595", "SA-Ds575",
+    "Sa_avg2-Ds595", "Sa_avg2-Ds575", "Sa_avg2-PGA", "Sa_avg2-PGV",
+    "Sa_avg3-Ds595", "Sa_avg3-Ds575", "Sa_avg3-PGA", "Sa_avg3-PGV",
+})
+
+ACTIVATION_FUNCTIONS = {
+    "linear": activation_functions.linear,
+    "softmax": activation_functions.softmax,
+    "tanh": activation_functions.tanh,
+    "sigmoid": activation_functions.sigmoid,
+}
+
+
 CORRELATIONS_ANN = read_json(Path.cwd() / "correlation_models.json")
+MODELS_ANN = read_json(Path.cwd() / "corr_ann.json")
 
 
 def supported_ims():
@@ -66,8 +82,8 @@ def supported_im_pairs():
     print(SUPPORTED_CORRELATION_PAIRS)
 
 
-def aso2024_correlation(im_pair: str, period1: float = None,
-                        period2: float = None) -> float:
+def aso2024_correlation_int(im_pair: str, period1: float = None,
+                            period2: float = None) -> float:
     """Correlation matrices predicted through an ANN model
 
     Parameters
@@ -125,3 +141,67 @@ def aso2024_correlation(im_pair: str, period1: float = None,
 
     # Both IMs are period-dependent
     return interpolate_2d(periods_i, periods_j, corr, period1, period2)
+
+
+def aso2024_correlation(im_pair: str, period1: float = None,
+                        period2: float = None) -> float:
+    """Correlation matrices predicted through an ANN model
+
+    Parameters
+    ----------
+    im_pair : str
+        IMi-IMj pair
+    period1 : float, optional
+        Period associated with IMi, by default None
+    period2 : float, optional
+        Period associated with IMj, by default None
+
+    Returns
+    -------
+    float
+        Correlation value
+    """
+    def _generate_function(x, biases, weights):
+        biases = np.asarray(biases)
+        weights = np.asarray(weights).T
+
+        return biases.reshape(1, -1) + np.dot(weights, x.T).T
+
+    imi, imj = im_pair.split("-")
+
+    try:
+        im_pair = f"{imi}-{imj}"
+        model = MODELS_ANN[im_pair]
+    except KeyError:
+        im_pair = f"{imj}-{imi}"
+        model = MODELS_ANN[im_pair]
+        # Switch positions too
+        period2, period1 = period1, period2
+        imj, imi = imi, imj
+
+    if period1 is None or period2 is None:
+        # Only one IM is period-independent
+        period = period1 or period2
+
+        x = np.array([period])
+
+    else:
+        x = np.array([period1, period2])
+
+    if imi == imj and period1 == period2:
+        return 1.0
+
+    biases = model["biases"]
+    weights = model["weights"]
+    act_funcs = model["activation-functions"]
+
+    for i, act in enumerate(act_funcs):
+        activation = ACTIVATION_FUNCTIONS[act]
+
+        if im_pair in TRANSFORMATIONS and i == 0:
+            x = np.log(x)
+
+        _data = _generate_function(x, biases[i], weights[i])
+        x = activation(_data)
+
+    return float(x)
