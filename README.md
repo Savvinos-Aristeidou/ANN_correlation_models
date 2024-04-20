@@ -4,7 +4,7 @@ Correlation models for several IMs developed via ANN
 **ANN models are available under /models directory.**
 
 # Reference
-Aristeidou, S., Shahnazaryan, D. and O’Reilly, G.J. (2024) ‘Correlation Models for Next-Generation Amplitude and Cumulative 2 Intensity Measures using Artificial Neural Networks’, Under Review
+Aristeidou, S., Shahnazaryan, D. and O’Reilly, G.J. (2024) ‘Correlation Models for Next-Generation Amplitude and Cumulative Intensity Measures using Artificial Neural Networks’, Under Review
 
 # Quick start without tensorflow models
 
@@ -14,7 +14,7 @@ Aristeidou, S., Shahnazaryan, D. and O’Reilly, G.J. (2024) ‘Correlation Mode
 pip3 install -r requirements.txt
 ```
 
-### 2. Run a sample code using interpolations (example.py)
+### 2. Run a sample code using the tabulated empirical values (example1.py)
 
 ```python
 from correlation_models import aso2024_correlation_int, supported_ims, \
@@ -44,7 +44,7 @@ print(f"Correlation coefficient between Sa_avg2({period1}s) "
 
 ```
 
-### 3. Run a sample code using biases, weights and activation functions (example2.py)
+### 3. Run a sample code using the predictive models (example2.py)
 
 **Recommended approach**
 
