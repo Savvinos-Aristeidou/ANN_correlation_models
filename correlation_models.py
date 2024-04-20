@@ -185,6 +185,10 @@ def aso2024_correlation(im_pair: str, period1: float = None,
 
         x = np.array([period])
 
+    elif imi == imj:
+        period_min = min(period1, period2)
+        period_max = max(period1, period2)
+        x = np.array([period_max, period_min])
     else:
         x = np.array([period1, period2])
 
