@@ -84,7 +84,7 @@ def supported_im_pairs():
 
 def aso2024_correlation_int(im_pair: str, period1: float = None,
                             period2: float = None) -> float:
-    """Correlation matrices predicted through an ANN model
+    """Correlations obtained from tabulated empirical values
 
     Parameters
     ----------
@@ -104,10 +104,10 @@ def aso2024_correlation_int(im_pair: str, period1: float = None,
 
     try:
         im_pair = f"{imi}-{imj}"
-        corr = CORRELATIONS_ANN[f"corr_{im_pair}"]
+        corr = CORRELATIONS_ANN["empirical"][f"corr_{im_pair}"]
     except KeyError:
         im_pair = f"{imj}-{imi}"
-        corr = CORRELATIONS_ANN[f"corr_{im_pair}"]
+        corr = CORRELATIONS_ANN["empirical"][f"corr_{im_pair}"]
         # Switch positions too
         period2, period1 = period1, period2
         imj, imi = imi, imj
@@ -145,7 +145,7 @@ def aso2024_correlation_int(im_pair: str, period1: float = None,
 
 def aso2024_correlation(im_pair: str, period1: float = None,
                         period2: float = None) -> float:
-    """Correlation matrices predicted through an ANN model
+    """Correlations matrices predicted from the ANN model
 
     Parameters
     ----------
